@@ -1,0 +1,115 @@
+-- Bảng CUSTOMERS
+CREATE TABLE CUSTOMERS (
+    CustomerID INT PRIMARY KEY IDENTITY,
+    Phone NVARCHAR(15),
+    Name NVARCHAR(100) NOT NULL,
+    Zalo NVARCHAR(100),
+    Address NVARCHAR(255),
+    DateCreated DATETIME,
+    CustomerGroup NVARCHAR(100),
+    CustomerSource NVARCHAR(100),
+    InterestedProducts NVARCHAR(100),
+    Note NVARCHAR(MAX)
+);
+
+-- Bảng EMPLOYEES
+CREATE TABLE EMPLOYEES (
+    EmployeeID INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL,
+    Position NVARCHAR(50),
+    Phone NVARCHAR(15),
+    HireDate DATETIME
+);
+
+-- Bảng WORKERS
+CREATE TABLE WORKERS (
+    WorkerID INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(15),
+    Email NVARCHAR(100),
+    Role NVARCHAR(50),
+    Experience NVARCHAR(MAX),
+    Note NVARCHAR(MAX)
+);
+
+-- Bảng CATEGORIES
+CREATE TABLE CATEGORIES (
+    CategoryID INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL,
+    ProductGroup NVARCHAR(100),
+    Description NVARCHAR(MAX)
+);
+
+-- Bảng PRODUCTS
+CREATE TABLE PRODUCTS (
+    ProductID INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL,
+    CategoryID INT,
+    Price DECIMAL(18, 2),
+    InventoryLevel NVARCHAR(100),
+    Unit NVARCHAR(50),
+    Description NVARCHAR(MAX),
+    FOREIGN KEY (CategoryID) REFERENCES CATEGORIES(CategoryID)
+);
+
+-- Bảng INVENTORY
+CREATE TABLE INVENTORY (
+    InventoryID INT PRIMARY KEY IDENTITY,
+    ProductID INT,
+    Quantity INT,
+    InputDate DECIMAL(18, 2),
+    OutputDate DECIMAL(18, 2),
+    FOREIGN KEY (ProductID) REFERENCES PRODUCTS(ProductID)
+);
+
+-- Bảng SHIPPING_CARRIERS
+CREATE TABLE SHIPPING_CARRIERS (
+    CarrierID INT PRIMARY KEY IDENTITY,
+    CarrierName NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(15),
+    Region NVARCHAR(100),
+    ShippingType NVARCHAR(100),
+    CompletedOrders INT,
+    Note NVARCHAR(MAX)
+);
+
+-- Bảng ORDERS
+CREATE TABLE ORDERS (
+    OrderID INT PRIMARY KEY IDENTITY,
+    CustomerID INT,
+    EmployeeID INT,
+    CarrierID INT,
+    WorkerID INT,
+    OrderDate DATETIME,
+    Total DECIMAL(18, 2),
+    ContactDate DATE,
+    FOREIGN KEY (CustomerID) REFERENCES CUSTOMERS(CustomerID),
+    FOREIGN KEY (EmployeeID) REFERENCES EMPLOYEES(EmployeeID),
+    FOREIGN KEY (CarrierID) REFERENCES SHIPPING_CARRIERS(CarrierID),
+    FOREIGN KEY (WorkerID) REFERENCES WORKERS(WorkerID)
+);
+
+-- Bảng ORDER_DETAILS
+CREATE TABLE ORDER_DETAILS (
+    OrderDetailID INT PRIMARY KEY IDENTITY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    Price DECIMAL(18, 2),
+    TotalPrice DECIMAL(18, 2),
+    FOREIGN KEY (OrderID) REFERENCES ORDERS(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES PRODUCTS(ProductID)
+);
+
+-- Bảng PAYMENTS
+CREATE TABLE PAYMENTS (
+    PaymentID INT PRIMARY KEY IDENTITY,
+    OrderID INT,
+    ShippingFee DECIMAL(18, 2),
+    InsuranceFee DECIMAL(18, 2),
+    Discount DECIMAL(18, 2),
+    TotalAmount DECIMAL(18, 2),
+    PaymentMethod NVARCHAR(100),
+    Note NVARCHAR(MAX),
+    FOREIGN KEY (OrderID) REFERENCES ORDERS(OrderID)
+);
